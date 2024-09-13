@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leyline-app
+  labels:
+    app: leyline-app
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: leyline-app
+  template:
+    metadata:
+      labels:
+        app: leyline-app
+    spec:
+      containers:
+      - name: leyline-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 3000
+        env:
+        - name: SQLALCHEMY_DATABASE_URI
+          value: "postgresql://{{ .Values.postgresql.user }}:{{ .Values.kubernetesSecret.dbPassword }}@{{ .Values.postgresql.host }}/{{ .Values.postgresql.database }}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000

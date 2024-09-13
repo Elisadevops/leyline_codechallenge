@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: leyline-app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3000
+
+postgresql:
+  user: postgres
+  password: postgres
+  database: queriesdb
+  host: flask-db
+
+kubernetesSecret:
+  dbPassword: postgres
